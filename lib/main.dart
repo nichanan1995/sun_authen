@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/register.dart';
 
 void main() {
   runApp(App());
@@ -50,8 +51,8 @@ class _HomePageState extends State<HomePage> {
                   child: signInButton(),
                 ),
                 new Expanded(
-                  child: signUpButton(),
-                )
+                  child: signUpButton(context),
+                ),
                 //new Expanded(child: Container(child: testText(),)
               ],
             ),
@@ -74,10 +75,11 @@ Widget titleApp() {
   return Text(
     'Sun Authen',
     style: TextStyle(
-        fontSize: 30.0,
-        fontFamily: 'Kanit-Bold',
-        fontWeight: FontWeight.bold,
-        color: Colors.orange[800],),
+      fontSize: 30.0,
+      fontFamily: 'Kanit-Bold',
+      fontWeight: FontWeight.bold,
+      color: Colors.orange[800],
+    ),
   );
 }
 
@@ -102,17 +104,24 @@ Widget signInButton() {
       'SignIn',
       style: TextStyle(color: Colors.white),
     ),
-    onPressed: () {},
+    onPressed: () {
+      print('your click SignUp');
+    },
   );
 }
 
-Widget signUpButton() {
+Widget signUpButton(BuildContext context) {
   return RaisedButton(
     color: Colors.orange,
     child: Text(
       'SignUp',
       style: TextStyle(color: Colors.white),
     ),
-    onPressed: () {},
+    onPressed: () {
+      print('your click SignIn');
+      var myRounte =
+          new MaterialPageRoute(builder: (BuildContext context) => Register());
+          Navigator.of(context).push(myRounte);
+    },
   );
 }
