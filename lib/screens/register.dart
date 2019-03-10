@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' show get;
+import 'dart:convert';
+import '../main.dart';
 
 class Register extends StatefulWidget {
   final Widget child;
@@ -55,52 +58,73 @@ class _RegisterState extends State<Register> {
     // formKey.currentState.reset();
     print(formKey.currentState.validate());
     formKey.currentState.save();
-    print('Name = $nameString, email = $emailString, password = $passwordString');
+    print(
+        'Name = $nameString, email = $emailString, password = $passwordString');
+    sentNewUserToServer(nameString, emailString, passwordString);
   }
-  
-Widget nameTextField() {
-  return TextFormField(
-    decoration: InputDecoration(labelText: 'Name:', hintText: 'Name Only'),
-    validator: (String value) {
-      if (value.length == 0) {
-        return 'Name not Blank ?';
-      }
-    },onSaved: (String  name){
-      nameString =name;
-  
-    },
-  );
-}
 
-Widget emailTextField() {
-  return TextFormField(
-    decoration:
-        InputDecoration(labelText: 'Email Address:', hintText: 'you@abc.com'),
-    validator: (String email) {
-      if (!email.contains('@')) {
-        return 'please fill Email Format ';
-      }
-    },onSaved: (String email){
-emailString=email;
-    },
-  );
-}
+  void sentNewUserToServer(
+      String userName, String userEmail, String userPassword) async {
+    String url =
+        'http://androidthai.in.th/sun/addUserOil.php?isAdd=true&Name=$userName&User=$userEmail&Password=$userPassword';
+    var respone = await get(url);
+    var result = json.decode(respone.body);
+    print('result ==>$result');
+    if (result.toString() == 'true') {
 
-Widget passwordTextField() {
-  return TextFormField(
-    decoration:
-        InputDecoration(labelText: 'Password:', hintText: 'more 5 Charactor'),
-    validator: (String password) {
-      if (password.length <= 5) {
-        return 'password !!!!!!!';
-      }
-    // },onSaved: (String password){
-    //   passwordString = password;
-    },onSaved: (String passwor){
-      passwordString=password;
-    },
+      print('back process');
+      Navigator.pop(context);
+
+      // var backRount =new MaterialPageRoute(builder: (BuildContext )=> HomePage());
+      // Navigator.of(context).push(backRount);
+
+    } 
+  }
+
+  Widget nameTextField() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Name:', hintText: 'Name Only'),
+      validator: (String value) {
+        if (value.length == 0) {
+          return 'Name not Blank ?';
+        }
+      },
+      onSaved: (String name) {
+        nameString = name;
+      },
+    );
+  }
+
+  Widget emailTextField() {
+    return TextFormField(
+      decoration:
+          InputDecoration(labelText: 'Email Address:', hintText: 'you@abc.com'),
+      validator: (String email) {
+        if (!email.contains('@')) {
+          return 'please fill Email Format ';
+        }
+      },
+      onSaved: (String email) {
+        emailString = email;
+      },
+    );
+  }
+
+  Widget passwordTextField() {
+    return TextFormField(
+      decoration:
+          InputDecoration(labelText: 'Password:', hintText: 'more 5 Charactor'),
+      validator: (String password) {
+        if (password.length <= 5) {
+          return 'password !!!!!!!';
+        }
+        // },onSaved: (String password){
+        //   passwordString = password;
+      },
+      onSaved: (String password) {
+        passwordString = password;
+      },
 // _RegisterState Class
-
-  );
-}
+    );
+  }
 }
