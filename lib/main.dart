@@ -3,6 +3,7 @@ import 'screens/register.dart';
 import 'package:http/http.dart' show get;
 import 'dart:convert';
 import './models/json_model.dart';
+import './screens/service.dart';
 
 void main() {
   runApp(App());
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
   final _scaffold = GlobalKey<ScaffoldState>();
 
-  String emailString, passwordString,nameString,truePassword,idString;
+  String emailString, passwordString, nameString, truePassword, idString;
 
   @override
   Widget build(BuildContext context) {
@@ -154,25 +155,28 @@ class _HomePageState extends State<HomePage> {
     if (result.toString() == 'null') {
       showSnackBar('User fail');
     } else {
+      for (var data in result) {
+        print('data==>$data');
+        var jsonModel = JsonModel.fromJson(data);
 
-for (var data in result) {
-  print('data==>$data');
-  var jsonModel = JsonModel.fromJson(data);
-  
-  truePassword = jsonModel.password.toString();
-  nameString = jsonModel.name.toString();
-  idString = jsonModel.id.toString();
+        truePassword = jsonModel.password.toString();
+        nameString = jsonModel.name.toString();
+        idString = jsonModel.id.toString();
 
-  print('id==>$idString, nameString==>$nameString,truePassword ==>$truePassword');
+        print(
+            'id==>$idString, nameString==>$nameString,truePassword ==>$truePassword');
+      }
+      if (passwordString == truePassword) {
+        showSnackBar('เข้ามาซิจ๊ะ $nameString');
 
-}
-if (passwordString == truePassword) {
-  showSnackBar('เข้ามาซิจ๊ะ $nameString');
-} else {
-  showSnackBar('ออกไปซะ !!');
-}
+        var serviceRoute =
+            new MaterialPageRoute(builder: (BuildContext context) => Service(nameLoginString: nameString,));
+        Navigator.of(context).push(serviceRoute);
 
-    }//if
+      } else {
+        showSnackBar('ออกไปซะ !!');
+      }
+    } //if
   }
 
   void showSnackBar(String messageString) {
