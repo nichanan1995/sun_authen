@@ -24,48 +24,52 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
+  final _scaffold = GlobalKey<ScaffoldState>();
+
   String emailString, passwordString;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffold,
         body: Form(
-      key: formKey,
-      child: ListView(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(top: 50.0),
-            child: logoShow(),
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: titleApp(),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 30.0, right: 30.0),
-            child: emailTextField(),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 30.0, right: 30.0),
-            child: passwordTextField(),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 50.0, right: 50.0),
-            child: Row(
-              children: <Widget>[
-                new Expanded(
-                  child: signInButton(context),
+          key: formKey,
+          child: ListView(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(top: 50.0),
+                child: logoShow(),
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: titleApp(),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 30.0, right: 30.0),
+                child: emailTextField(),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 30.0, right: 30.0),
+                child: passwordTextField(),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 50.0, right: 50.0),
+                child: Row(
+                  children: <Widget>[
+                    new Expanded(
+                      child: signInButton(context),
+                    ),
+                    new Expanded(
+                      child: signUpButton(context),
+                    ),
+                    //new Expanded(child: Container(child: testText(),)
+                  ],
                 ),
-                new Expanded(
-                  child: signUpButton(context),
-                ),
-                //new Expanded(child: Container(child: testText(),)
-              ],
-            ),
-          )
-        ],
-      ),
-    ));
+              )
+            ],
+          ),
+        ));
   }
 
   Widget testText() {
@@ -147,11 +151,23 @@ class _HomePageState extends State<HomePage> {
     var result = json.decode(response.body);
     print('result==>$result');
     if (result.toString() == 'null') {
+      showSnackBar('User fail');
     } else {}
   }
 
   void showSnackBar(String messageString) {
-    
+    final snackBar = new SnackBar(
+      content: Text(messageString),
+      backgroundColor: Colors.orange[200],
+      duration: new Duration(seconds: 4),
+      action: new SnackBarAction(
+        label: 'Please Click',
+        onPressed: () {
+          print('You Click SnackBare');
+        },
+      ),
+    );
+    _scaffold.currentState.showSnackBar(snackBar);
   }
 
   Widget signUpButton(BuildContext context) {
