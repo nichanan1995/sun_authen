@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/register.dart';
+import 'package:http/http.dart' show get;
+import 'dart:convert';
 
 void main() {
   runApp(App());
@@ -21,10 +23,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final formKey = GlobalKey<FormState>();
+  String emailString, passwordString;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+        body: Form(
+      key: formKey,
+      child: ListView(
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -48,7 +54,7 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: <Widget>[
                 new Expanded(
-                  child: signInButton(),
+                  child: signInButton(context),
                 ),
                 new Expanded(
                   child: signUpButton(context),
@@ -59,69 +65,108 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
+    ));
+  }
+
+  Widget testText() {
+    return Text('textText');
+  }
+
+  Widget logoShow() {
+    return Image.asset('images/logo.png');
+  }
+
+  Widget titleApp() {
+    return Text(
+      'Sun Authen',
+      style: TextStyle(
+        fontSize: 30.0,
+        fontFamily: 'Kanit-Bold',
+        fontWeight: FontWeight.bold,
+        color: Colors.orange[800],
+      ),
     );
   }
-}
 
-Widget testText() {
-  return Text('textText');
-}
+  Widget emailTextField() {
+    return TextFormField(
+      decoration: InputDecoration(
+          labelText: 'Email Address:', hintText: 'your@email.com'),
+      validator: (String value) {
+        if (!value.contains('@')) {
+          return 'โอ๊ยหน๊อ พิมพ์ใหม่เส่ !!!';
+        }
+      },
+      onSaved: (String value) {
+        emailString = value;
+      },
+    );
+  }
 
-Widget logoShow() {
-  return Image.asset('images/logo.png');
-}
+  Widget passwordTextField() {
+    return TextFormField(
+      obscureText: true,
+      decoration:
+          InputDecoration(labelText: 'Password:', hintText: 'more 5 Charactor'),
+      validator: (String value) {
+        if (value.length <= 5) {
+          return 'กรอกใหม่ซิ !';
+        }
+      },
+      onSaved: (String value) {
+        passwordString = value;
+      },
+    );
+  }
 
-Widget titleApp() {
-  return Text(
-    'Sun Authen',
-    style: TextStyle(
-      fontSize: 30.0,
-      fontFamily: 'Kanit-Bold',
-      fontWeight: FontWeight.bold,
-      color: Colors.orange[800],
-    ),
-  );
-}
+  Widget signInButton(BuildContext context) {
+    return RaisedButton(
+      color: Colors.yellow,
+      child: Text(
+        'SignIn',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {
+        print('your click SignUp');
+        //print(formKey.currentState.validate());
+        if (formKey.currentState.validate()) {
+          formKey.currentState.save();
+          checkEmailAndPass(context, emailString, passwordString);
+        }
+      },
+    );
+  }
 
-Widget emailTextField() {
-  return TextFormField(
-    decoration: InputDecoration(
-        labelText: 'Email Address:', hintText: 'youur@email.com'),
-  );
-}
+  void checkEmailAndPass(
+      BuildContext context, String email, String password) async {
+    print('email ==>$email,password==>$password');
 
-Widget passwordTextField() {
-  return TextFormField(
-    decoration:
-        InputDecoration(labelText: 'Password:', hintText: 'more 5 Charactor'),
-  );
-}
+    String urlString =
+        'http://androidthai.in.th/sun/getUserWhereUserOil.php?isAdd=true&User=$email';
+    var response = await get(urlString);
+    var result = json.decode(response.body);
+    print('result==>$result');
+    if (result.toString() == 'null') {
+    } else {}
+  }
 
-Widget signInButton() {
-  return RaisedButton(
-    color: Colors.yellow,
-    child: Text(
-      'SignIn',
-      style: TextStyle(color: Colors.white),
-    ),
-    onPressed: () {
-      print('your click SignUp');
-    },
-  );
-}
+  void showSnackBar(String messageString) {
+    
+  }
 
-Widget signUpButton(BuildContext context) {
-  return RaisedButton(
-    color: Colors.orange,
-    child: Text(
-      'SignUp',
-      style: TextStyle(color: Colors.white),
-    ),
-    onPressed: () {
-      print('your click SignIn');
-      var myRounte =
-          new MaterialPageRoute(builder: (BuildContext context) => Register());
-          Navigator.of(context).push(myRounte);
-    },
-  );
-}
+  Widget signUpButton(BuildContext context) {
+    return RaisedButton(
+      color: Colors.orange,
+      child: Text(
+        'SignUp',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {
+        print('your click SignIn');
+        var myRounte = new MaterialPageRoute(
+            builder: (BuildContext context) => Register());
+        Navigator.of(context).push(myRounte);
+      },
+    );
+  }
+} //_HomePageState
